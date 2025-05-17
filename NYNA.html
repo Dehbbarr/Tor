@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Генератор аниме контента</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: rgba(255,255,255,0.9);
+    border-radius: 12px;
+    padding: 20px 25px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  button {
+    cursor: pointer;
+    margin: 5px 5px 15px 0;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background-color: #6C63FF;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.25s ease;
+  }
+  button:hover {
+    background-color: #574fd6;
+  }
+  textarea {
+    width: 100%;
+    min-height: 160px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #bbb;
+    font-size: 16px;
+    resize: vertical;
+  }
+  .output-img {
+    display: block;
+    margin: 20px auto;
+    max-width: 320px;
+    border-radius: 14px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .links {
+    text-align: center;
+    margin-top: 20px;
+  }
+  .links a {
+    margin: 0 15px;
+    color: #6C63FF;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .links a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Генератор аниме контента</h1>
+
+  <button id="generateIdeaBtn">Сгенерировать идею</button>
+  <button id="generateCharacterBtn">Сгенерировать персонажа</button>
+  <button id="generateStyleBtn">Сгенерировать стиль</button>
+  <button id="generatePropsBtn">Сгенерировать пропорции</button>
+  <button id="generatePlotBtn">Сгенерировать сюжет</button>
+  <button id="generateTitleBtn">Сгенерировать название</button>
+  <button id="generateTagsBtn">Сгенерировать хештеги</button>
+  <button id="generateDescBtn">Сгенерировать описание</button>
+  <button id="downloadTxtBtn">Скачать текст</button>
+
+  <textarea id="outputText" placeholder="Результат появится здесь..."></textarea>
+
+  <hr/>
+
+  <button id="generateFaceBtn">Сгенерировать аниме-лицо</button>
+  <button id="downloadPngBtn">Скачать изображение</button>
+  <canvas id="faceCanvas" width="320" height="320" class="output-img"></canvas>
+
+  <div class="links">
+    <a href="https://boosty.to/jgfyka.kagiejifanvis/about" target="_blank" rel="noopener">Поддержать автора на Boosty</a>
+    <a href="https://t.me/hshe7jg6we" target="_blank" rel="noopener">Телеграмм канал</a>
+  </div>
+</div>
+
+<script>
+// ======== НАСТРОЙКИ ========
+const backgroundImageURL = 'Japanese_Garden_2_FeaturedNew-894x488-6f3e5d46bb0b02d09741afc4d9f08035.png'; // <-- Вставляй сюда ссылку на фон
+
+// Кисти для лица (в том же каталоге)
+const brushURLs = {
+  face: 'Als1.png',
+  eyes: 'Als2.png',
+  hair: 'Als3.png',
+  mouth: 'Als4.png'
+};
+
+// ======== ЗАДАЁМ ФОН =========
+document.body.style.backgroundImage = `url('${backgroundImageURL}')`;
+document.body.style.backgroundSize = 'cover';
+document.body.style.backgroundPosition = 'center';
+
+// ======== ДАННЫЕ ДЛЯ ГЕНЕРАЦИИ ========
+const ideas = [
+  "Путешествие в мир аниме",
+  "Создание уникального персонажа",
+  "Магическая школа",
+  "Боевые роботы",
+  "Дружба и приключения",
+  "Мистика и тайны",
+  "Киберпанк будущее",
+  "Фантастический квест"
+];
+
+const characters = [
+  "Храбрый воин",
+  "Таинственный маг",
+  "Веселый шутник",
+  "Мудрый наставник",
+  "Молодая девушка с силой льда",
+  "Парень с мечтой стать героем",
+  "Андроид с эмоциями"
+];
+
+const styles = [
+  "Ретро аниме",
+  "Современный стиль",
+  "Манга с чёрно-белыми оттенками",
+  "Цветастый и яркий",
+  "Тёмная готика",
+  "Кавайный стиль"
+];
+
+const proportions = [
+  "Большие глаза, маленький рот",
+  "Пропорции классического манга",
+  "Удлинённое лицо",
+  "Короткая шея и широкие плечи",
+  "Маленький нос и большие волосы"
+];
+
+const plots = [
+  "Герои сражаются за спасение мира",
+  "Любовный треугольник между друзьями",
+  "Таинственная сила пробуждается в главном герое",
+  "Путешествие сквозь время и пространство",
+  "Сражение с древним злом"
+];
+
+const titles = [
+  "Ветер судьбы",
+  "Тени прошлого",
+  "Пламя надежды",
+  "Крылья свободы",
+  "Звёздный путь"
+];
+
+const hashtags = [
+  "#аниме", "#манга", "#арт", "#японскаякультура", "#герои", "#фэнтези", "#косплей", "#анимешники"
+];
+
+const descriptions = [
+  "Увлекательная история о приключениях и дружбе.",
+  "Яркий сюжет с динамичными персонажами и неожиданными поворотами.",
+  "Мистический мир, где каждый может стать героем.",
+  "Погружение в атмосферу японской культуры и фантазии.",
+  "Трогательная драма с элементами комедии и экшена."
+];
+
+// ======== ЭЛЕМЕНТЫ ========
+const outputText = document.getElementById('outputText');
+
+function getRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ======== КНОПКИ ГЕНЕРАЦИИ ========
+document.getElementById('generateIdeaBtn').onclick = () => {
+  outputText.value = `Идея: ${getRandom(ideas)}`;
+};
+document.getElementById('generateCharacterBtn').onclick = () => {
+  outputText.value = `Персонаж: ${getRandom(characters)}`;
+};
+document.getElementById('generateStyleBtn').onclick = () => {
+  outputText.value = `Стиль: ${getRandom(styles)}`;
+};
+document.getElementById('generatePropsBtn').onclick = () => {
+  outputText.value = `Пропорции: ${getRandom(proportions)}`;
+};
+document.getElementById('generatePlotBtn').onclick = () => {
+  outputText.value = `Сюжет: ${getRandom(plots)}`;
+};
+document.getElementById('generateTitleBtn').onclick = () => {
+  outputText.value = `Название: ${getRandom(titles)}`;
+};
+document.getElementById('generateTagsBtn').onclick = () => {
+  outputText.value = `Хештеги: ${hashtags.join(' ')}`;
+};
+document.getElementById('generateDescBtn').onclick = () => {
+  outputText.value = `Описание: ${getRandom(descriptions)}`;
+};
+
+// ======== КНОПКА СКАЧАТЬ TXT ========
+document.getElementById('downloadTxtBtn').onclick = () => {
+  const text = outputText.value;
+  if (!text) return alert('Сначала сгенерируйте текст!');
+  const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'anime_content.txt';
+  link.click();
+  URL.revokeObjectURL(link.href);
+};
+
+// ======== ГЕНЕРАЦИЯ ЛИЦА ========
+const canvas = document.getElementById('faceCanvas');
+const ctx = canvas.getContext('2d');
+
+const brushes = {};
+let brushesLoaded = 0;
+
+function loadBrushes() {
+  for (const [key, url] of Object.entries(brushURLs)) {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      brushes[key] = img;
+      brushesLoaded++;
+      if (brushesLoaded === Object.keys(brushURLs).length) {
+        console.log('Все кисти загружены');
+      }
+    };
+    img.onerror = () => {
+      console.warn(`Ошибка загрузки кисти: ${url}`);
+    };
+  }
+}
+
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Можно залить прозрачным или другим цветом
+  ctx.fillStyle = 'rgba(255,255,255,0)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
+function generateFace() {
+  if (brushesLoaded !== Object.keys(brushURLs).length) {
+    alert('Кисти ещё загружаются, подождите');
+    return;
+  }
+  clearCanvas();
+
+  // Пример продвинутой генерации лица
+  // Можно рандомизировать положение, размеры, повороты кистей для эффекта вариативности
+
+  // Рисуем лицо (основа)
+  ctx.drawImage(brushes.face, 60, 40, 200, 250);
+
+  // Рисуем глаза с небольшим сдвигом и рандомом по размеру
+  const eyeSize = 50 + Math.random() * 10;
+  ctx.drawImage(brushes.eyes, 80 + Math.random()*10, 120 + Math.random()*5, eyeSize, eyeSize * 0.7);
+  ctx.drawImage(brushes.eyes, 180 + Math.random()*10, 120 + Math.random()*5, eyeSize, eyeSize * 0.7);
+
+  // Волосы — чуть больше и с легким поворотом
+  ctx.save();
+  ctx.translate(160, 130);
+  ctx.rotate((Math.random() - 0.5) * 0.1);
+  ctx.drawImage(brushes.hair, -100, -100, 220, 220);
+  ctx.restore();
+
+  // Рот — рандомный масштаб и положение
+  const mouthWidth = 40 + Math.random() * 15;
+  const mouthHeight = mouthWidth * 0.3;
+  ctx.drawImage(brushes.mouth, 130 + Math.random()*20, 230 + Math.random()*10, mouthWidth, mouthHeight);
+}
+
+document.getElementById('generateFaceBtn').onclick = generateFace;
+
+// ======== СКАЧАТЬ PNG ========
+document.getElementById('downloadPngBtn').onclick = () => {
+  const link = document.createElement('a');
+  link.download = 'anime_face.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+};
+
+loadBrushes();
+
+</script>
+</body>
+</html>
